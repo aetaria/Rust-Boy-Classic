@@ -1,8 +1,8 @@
-# gba_emulator
+# Rust Boy Classic
 
 An early-stage emulator project written in Rust with no external dependencies. The current milestone loads a ROM and displays its cartridge metadata.
 
-Despite the package name, the current parser targets the original Game Boy (DMG) cartridge format. Game Boy Advance ROMs are not supported.
+Rust Boy Classic targets the original Game Boy (DMG) cartridge format (`.gb`). Game Boy Advance ROMs are not supported. The Rust package, library crate, and executable are named `rust_boy_classic`.
 
 ## Current Status
 

@@ -1,10 +1,10 @@
 use std::{env, fs, path::PathBuf, process::ExitCode};
 
-use gba_emulator::cartridge::Cartridge;
+use rust_boy_classic::cartridge::Cartridge;
 
 fn run() -> Result<(), String> {
     let mut args = env::args_os();
-    let program = args.next().unwrap_or_else(|| "gba_emulator".into());
+    let program = args.next().unwrap_or_else(|| "rust_boy_classic".into());
     let usage = || format!("Usage: {} <rom-path>", PathBuf::from(&program).display());
     let path = PathBuf::from(args.next().ok_or_else(usage)?);
     if args.next().is_some() {
@@ -38,7 +38,7 @@ fn run() -> Result<(), String> {
 }
 
 fn main() -> ExitCode {
-   match run() {
+    match run() {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
             eprintln!("Error: {error}");
