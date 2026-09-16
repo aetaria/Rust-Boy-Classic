@@ -38,7 +38,7 @@ fn run() -> Result<(), String> {
 }
 
 fn main() -> ExitCode {
-   match run() {
+    match run() {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
             eprintln!("Error: {error}");

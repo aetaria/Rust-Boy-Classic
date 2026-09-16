@@ -105,6 +105,30 @@ impl Cartridge {
         })
     }
 
+    /// Read a cartridge bus address. ROM ONLY has no external RAM, so
+    /// reads from its external RAM window return 0xFF.
+    ///
+    /// # Panics
+    /// Panics if the address is outside 0x0000..=0x7FFF or 0xA000..=0xBFFF.
+    pub fn read(&self, address: u16) -> u8 {
+        match address {
+            0x0000..=0x7FFF => self.rom[usize::from(address)],
+            0xA000..=0xBFFF => 0xFF,
+            _ => panic!("address 0x{address:04X} is not a cartridge address"),
+        }
+    }
+
+    /// ROM ONLY has neither mapper registers nor RAM; writes are ignored.
+    ///
+    /// # Panics
+    /// Panics for addresses outside the cartridge windows.
+    pub fn write(&mut self, address: u16, _value: u8) {
+        match address {
+            0x0000..=0x7FFF | 0xA000..=0xBFFF => {}
+            _ => panic!("address 0x{address:04X} is not a cartridge address"),
+        }
+    }
+
     pub fn header(&self) -> &Header {
         &self.header
     }
@@ -170,6 +194,26 @@ mod tests {
         let mut bytes = vec![0; ROM_ONLY_SIZE];
         bytes[0x134..0x138].copy_from_slice(b"TEST");
         bytes
+    }
+
+    #[test]
+    fn reads_rom_boundaries_and_middle_and_ignores_writes() {
+        let mut bytes = rom();
+        let addresses = [0x0000, 0x2000, 0x3FFF, 0x4000, 0x6000, 0x7FFF];
+        for (index, &address) in addresses.iter().enumerate() {
+            bytes[address as usize] = index as u8 + 1;
+        }
+        let mut cartridge = Cartridge::from_bytes(bytes.clone()).unwrap();
+        for address in addresses {
+            assert_eq!(cartridge.read(address), bytes[address as usize]);
+            cartridge.write(address, 0xEE);
+            assert_eq!(cartridge.read(address), bytes[address as usize]);
+        }
+        assert_eq!(cartridge.rom(), bytes);
+        for address in [0xA000, 0xB000, 0xBFFF] {
+            cartridge.write(address, 0x42);
+            assert_eq!(cartridge.read(address), 0xFF);
+        }
     }
 
     #[test]
