@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "gba_emulator"
+name = "rust_boy_classic"
 version = "0.1.0"

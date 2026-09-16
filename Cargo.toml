@@ -1,5 +1,5 @@
 [package]
-name = "gba_emulator"
+name = "rust_boy_classic"
 version = "0.1.0"
 edition = "2024"
 
